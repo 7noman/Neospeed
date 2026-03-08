@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Train Booking System</title>
+
+<style>
+
+body{
+font-family: Arial;
+background: linear-gradient(120deg,#2980b9,#6dd5fa);
+margin:0;
+padding:0;
+}
+
+.container{
+width:80%;
+margin:auto;
+margin-top:30px;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+}
+
+h1{
+text-align:center;
+}
+
+form{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:20px;
+}
+
+input,button{
+padding:10px;
+font-size:15px;
+}
+
+button{
+background:#2980b9;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+table,th,td{
+border:1px solid gray;
+}
+
+th,td{
+padding:8px;
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🚆 Train Booking System</h1>
+
+<h2>Register</h2>
+
+<form id="registerForm">
+
+<input type="text" id="name" placeholder="Name" required>
+<input type="email" id="email" placeholder="Email" required>
+<input type="password" id="password" placeholder="Password" required>
+
+<button type="submit">Register</button>
+
+</form>
+
+<h2>Login</h2>
+
+<form id="loginForm">
+
+<input type="email" id="loginEmail" placeholder="Email" required>
+<input type="password" id="loginPassword" placeholder="Password" required>
+
+<button type="submit">Login</button>
+
+</form>
+
+<h2>Book Train</h2>
+
+<form id="bookingForm">
+
+<input type="text" id="passenger_name" placeholder="Passenger Name" required>
+<input type="text" id="train_name" placeholder="Train Name" required>
+<input type="text" id="source" placeholder="Source" required>
+<input type="text" id="destination" placeholder="Destination" required>
+<input type="date" id="travel_date" required>
+
+<button type="submit">Book Ticket</button>
+
+</form>
+
+<h2>All Bookings</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Passenger</th>
+<th>Train</th>
+<th>Source</th>
+<th>Destination</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody id="bookingTable"></tbody>
+
+</table>
+
+</div>
+
+<script>
+
+const API="http://localhost:3000/api"
+
+// REGISTER
+document.getElementById("registerForm").addEventListener("submit",async(e)=>{
+
+e.preventDefault()
+
+const data={
+name:document.getElementById("name").value,
+email:document.getElementById("email").value,
+password:document.getElementById("password").value
+}
+
+const res=await fetch(API+"/register",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+
+const result=await res.json()
+
+alert(result.message)
+
+})
+
+// LOGIN
+document.getElementById("loginForm").addEventListener("submit",async(e)=>{
+
+e.preventDefault()
+
+const data={
+email:document.getElementById("loginEmail").value,
+password:document.getElementById("loginPassword").value
+}
+
+const res=await fetch(API+"/login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+
+const result=await res.json()
+
+alert(result.message)
+
+})
+
+// BOOKING
+document.getElementById("bookingForm").addEventListener("submit",async(e)=>{
+
+e.preventDefault()
+
+const data={
+passenger_name:document.getElementById("passenger_name").value,
+train_name:document.getElementById("train_name").value,
+source:document.getElementById("source").value,
+destination:document.getElementById("destination").value,
+travel_date:document.getElementById("travel_date").value
+}
+
+const res=await fetch(API+"/bookings",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+
+const result=await res.json()
+
+alert(result.message)
+
+loadBookings()
+
+})
+
+// LOAD BOOKINGS
+
+async function loadBookings(){
+
+const res=await fetch(API+"/bookings")
+
+const data=await res.json()
+
+let rows=""
+
+data.forEach(b=>{
+
+rows+=`
+<tr>
+<td>${b.id}</td>
+<td>${b.passenger_name}</td>
+<td>${b.train_name}</td>
+<td>${b.source}</td>
+<td>${b.destination}</td>
+<td>${b.travel_date}</td>
+</tr>
+`
+
+})
+
+document.getElementById("bookingTable").innerHTML=rows
+
+}
+
+loadBookings()
+
+</script>
+
+</body>
+</html>

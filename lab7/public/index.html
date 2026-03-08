@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NeoSpeed - Train Booking System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+body {
+    height: 100vh;
+    background: url("https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1920&q=80") no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    animation: zoomBg 25s infinite alternate ease-in-out;
+}
+
+@keyframes zoomBg {
+    from { background-size: 100%; }
+    to { background-size: 115%; }
+}
+        /* Dark overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+        }
+
+        .container {
+            position: relative;
+            width: 450px;
+            padding: 30px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            color: white;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        input:focus {
+            box-shadow: 0 0 8px #00f2ff;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #00f2ff, #0072ff);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #00f2ff;
+        }
+
+        ul {
+            list-style: none;
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        li {
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2> NeoSpeed Booking</h2>
+
+    <button onclick="loadBookings()">View Bookings</button>
+
+    <ul id="list"></ul>
+
+    <h3>Book New Ticket</h3>
+
+    <input type="text" id="name" placeholder="Passenger Name">
+    <input type="text" id="train" placeholder="Train Name">
+    <input type="text" id="seat" placeholder="Seat Number">
+
+    <button onclick="addBooking()">Confirm Booking</button>
+
+</div>
+
+<script>
+
+function loadBookings() {
+    fetch('/bookings')
+        .then(res => res.json())
+        .then(data => {
+            const list = document.getElementById("list");
+            list.innerHTML = "";
+
+            data.bookings.forEach(booking => {
+                const li = document.createElement("li");
+                li.textContent = booking.name + 
+                                 " | " + booking.train + 
+                                 " | Seat: " + booking.seat;
+                list.appendChild(li);
+            });
+        });
+}
+
+function addBooking() {
+    const name = document.getElementById("name").value;
+    const train = document.getElementById("train").value;
+    const seat = document.getElementById("seat").value;
+
+    fetch('/addBooking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            id: Date.now(),
+            name: name,
+            train: train,
+            seat: seat
+        })
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        loadBookings();
+    });
+}
+
+</script>
+
+</body>
+</html>

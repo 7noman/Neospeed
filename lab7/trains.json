@@ -1,0 +1,34 @@
+{
+  "bookings": [
+    {
+      "id": 1,
+      "name": "Noman",
+      "train": "Rajdhani Express",
+      "seat": "A1"
+    },
+    {
+      "id": 2,
+      "name": "Akshat",
+      "train": "Shatabdi Express",
+      "seat": "B2"
+    },
+    {
+      "id": 1771488334483,
+      "name": "Akshat",
+      "train": "Vande Bharat",
+      "seat": "6A"
+    },
+    {
+      "id": 1771488668819,
+      "name": "Himanshu",
+      "train": "Toofan Express",
+      "seat": "001A"
+    },
+    {
+      "id": 1772786108089,
+      "name": "Noman",
+      "train": "Bangalore express",
+      "seat": "2A"
+    }
+  ]
+}

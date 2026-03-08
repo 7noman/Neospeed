@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Train Booking System</title>
+
+<style>
+
+body{
+font-family: Arial;
+background: linear-gradient(120deg,#2980b9,#6dd5fa);
+margin:0;
+padding:0;
+}
+
+.container{
+width:80%;
+margin:auto;
+margin-top:40px;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+}
+
+h1{
+text-align:center;
+}
+
+form{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+input,button{
+padding:10px;
+font-size:16px;
+}
+
+button{
+background:#2980b9;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+button:hover{
+background:#1c5980;
+}
+
+table{
+width:100%;
+margin-top:30px;
+border-collapse:collapse;
+}
+
+table,th,td{
+border:1px solid gray;
+}
+
+th,td{
+padding:10px;
+text-align:center;
+}
+
+.delete{
+background:red;
+color:white;
+padding:5px 10px;
+border:none;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🚆 Train Booking System</h1>
+
+<form id="bookingForm">
+
+<input type="text" id="passenger_name" placeholder="Passenger Name" required>
+
+<input type="text" id="train_name" placeholder="Train Name" required>
+
+<input type="text" id="source" placeholder="Source" required>
+
+<input type="text" id="destination" placeholder="Destination" required>
+
+<input type="date" id="travel_date" required>
+
+<button type="submit">Book Ticket</button>
+
+</form>
+
+<h2>All Bookings</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Passenger</th>
+<th>Train</th>
+<th>Source</th>
+<th>Destination</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="bookingTable"></tbody>
+
+</table>
+
+</div>
+
+<script>
+
+const API="http://localhost:3000/bookings"
+
+document.getElementById("bookingForm").addEventListener("submit",async(e)=>{
+
+e.preventDefault()
+
+const data={
+passenger_name:document.getElementById("passenger_name").value,
+train_name:document.getElementById("train_name").value,
+source:document.getElementById("source").value,
+destination:document.getElementById("destination").value,
+travel_date:document.getElementById("travel_date").value
+}
+
+await fetch(API,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(data)
+})
+
+alert("Booking Successful")
+
+loadBookings()
+
+})
+
+async function loadBookings(){
+
+const res=await fetch(API)
+
+const data=await res.json()
+
+let rows=""
+
+data.forEach(b=>{
+
+rows+=`
+<tr>
+<td>${b.id}</td>
+<td>${b.passenger_name}</td>
+<td>${b.train_name}</td>
+<td>${b.source}</td>
+<td>${b.destination}</td>
+<td>${b.travel_date}</td>
+<td>
+<button class="delete" onclick="deleteBooking(${b.id})">Delete</button>
+</td>
+</tr>
+`
+
+})
+
+document.getElementById("bookingTable").innerHTML=rows
+
+}
+
+async function deleteBooking(id){
+
+await fetch(API+"/"+id,{
+method:"DELETE"
+})
+
+alert("Booking Deleted")
+
+loadBookings()
+
+}
+
+loadBookings()
+
+</script>
+
+</body>
+</html>
