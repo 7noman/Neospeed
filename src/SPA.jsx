@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { HashLink as Link } from "react-router-hash-link";
-import RegistrationForm from "./RegistrationForm";
+import RegistrationForm from "./registrationform";
 import BookingForm from "./bookingform";
 import "./SPA.css";
 import trainImg from "./assets/futuristic.jpg";
